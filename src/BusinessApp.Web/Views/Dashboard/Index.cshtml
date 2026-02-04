@@ -1,0 +1,31 @@
+@model DashboardDto
+@{ ViewData["Title"] = "Dashboard"; }
+<div class="page-header"><h1><i class="bi bi-speedometer2"></i> Dashboard</h1><p class="text-muted">Resumen del estado de tu negocio</p></div>
+
+<div class="row g-4 mb-4">
+<div class="col-md-3"><div class="card border-0 shadow-sm h-100" style="border-left:4px solid #667eea !important;"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h6 class="text-muted mb-1">Clientes</h6><h2 class="mb-0">@Model.TotalCustomers</h2><small class="text-success"><i class="bi bi-arrow-up"></i> @Model.ActiveCustomers activos</small></div><div><i class="bi bi-people" style="font-size:3rem;color:#667eea;opacity:0.3;"></i></div></div></div></div></div>
+<div class="col-md-3"><div class="card border-0 shadow-sm h-100" style="border-left:4px solid #10b981 !important;"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h6 class="text-muted mb-1">Productos</h6><h2 class="mb-0">@Model.TotalProducts</h2><small class="text-muted">En catálogo</small></div><div><i class="bi bi-box-seam" style="font-size:3rem;color:#10b981;opacity:0.3;"></i></div></div></div></div></div>
+<div class="col-md-3"><div class="card border-0 shadow-sm h-100" style="border-left:4px solid #f59e0b !important;"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h6 class="text-muted mb-1">Stock Bajo</h6><h2 class="mb-0 text-warning">@Model.LowStockProducts</h2><small class="text-muted">Requieren atención</small></div><div><i class="bi bi-exclamation-triangle" style="font-size:3rem;color:#f59e0b;opacity:0.3;"></i></div></div></div></div></div>
+<div class="col-md-3"><div class="card border-0 shadow-sm h-100" style="border-left:4px solid #ef4444 !important;"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h6 class="text-muted mb-1">Sin Stock</h6><h2 class="mb-0 text-danger">@Model.OutOfStockProducts</h2><small class="text-muted">Productos agotados</small></div><div><i class="bi bi-x-circle" style="font-size:3rem;color:#ef4444;opacity:0.3;"></i></div></div></div></div></div>
+</div>
+
+<div class="row g-4">
+<div class="col-md-8"><div class="card border-0 shadow-sm"><div class="card-body"><h5 class="card-title"><i class="bi bi-bar-chart"></i> Estadísticas por Categoría</h5><hr>
+@if(Model.CategoryStats.Any()){<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Categoría</th><th>Productos</th><th>Valor Total</th></tr></thead><tbody>
+@foreach(var stat in Model.CategoryStats){<tr><td><span style="display:inline-block;width:12px;height:12px;background:@(stat.Color ?? "#667eea");border-radius:50%;margin-right:8px;"></span>@stat.CategoryName</td><td><strong>@stat.ProductCount</strong></td><td><strong>$@stat.TotalValue.ToString("N2")</strong></td></tr>}
+</tbody></table></div>}else{<p class="text-center text-muted py-4">No hay datos disponibles</p>}
+</div></div>
+
+<div class="card border-0 shadow-sm mt-4"><div class="card-body"><h5 class="card-title"><i class="bi bi-cash-stack"></i> Resumen Financiero</h5><hr>
+<div class="row g-3"><div class="col-md-6"><div style="background:#f8f9fa;padding:1.5rem;border-radius:8px;border-left:3px solid #667eea;"><h6 class="text-muted mb-1">Valor del Inventario</h6><h3 class="mb-0" style="color:#667eea;">$@Model.TotalInventoryValue.ToString("N2")</h3></div></div>
+<div class="col-md-6"><div style="background:#f8f9fa;padding:1.5rem;border-radius:8px;border-left:3px solid #10b981;"><h6 class="text-muted mb-1">Categorías Activas</h6><h3 class="mb-0" style="color:#10b981;">@Model.TotalCategories</h3></div></div></div>
+</div></div></div>
+
+<div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><h5 class="card-title"><i class="bi bi-clock-history"></i> Actividad Reciente</h5><hr>
+@if(Model.RecentActivities.Any()){<div class="timeline">@foreach(var activity in Model.RecentActivities){<div class="timeline-item mb-3 pb-3 border-bottom"><div class="d-flex align-items-start"><i class="bi @activity.Icon me-2" style="font-size:1.5rem;color:#667eea;"></i><div style="flex:1;"><p class="mb-1"><strong>@activity.Description</strong></p><small class="text-muted"><i class="bi bi-clock"></i> @activity.Timestamp.ToString("dd/MM/yyyy HH:mm")</small></div></div></div>}</div>}else{<p class="text-center text-muted py-4">Sin actividad reciente</p>}
+</div></div>
+
+<div class="card border-0 shadow-sm mt-4"><div class="card-body"><h5 class="card-title"><i class="bi bi-link-45deg"></i> Accesos Rápidos</h5><hr>
+<div class="d-grid gap-2"><a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary btn-sm"><i class="bi bi-person-plus"></i> Nuevo Cliente</a><a asp-controller="Products" asp-action="Create" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-circle"></i> Nuevo Producto</a><a asp-controller="Categories" asp-action="Create" class="btn btn-outline-primary btn-sm"><i class="bi bi-tag"></i> Nueva Categoría</a></div>
+</div></div></div>
+</div>

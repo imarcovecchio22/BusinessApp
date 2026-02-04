@@ -1,0 +1,176 @@
+@model UserDto
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="bi bi-person-circle"></i> Detalles del Usuario</h1>
+            <p class="text-muted mb-0">Información completa del usuario</p>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-2 text-center">
+                        <i class="bi bi-person-circle" style="font-size: 5rem; color: #667eea;"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h3 class="mb-2">@Model.FullName</h3>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-envelope"></i> @Model.Email
+                        </p>
+                        <div>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Activo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Inactivo
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small mb-1">
+                                <i class="bi bi-person"></i> Nombre
+                            </label>
+                            <p class="mb-0"><strong>@Model.FirstName</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small mb-1">
+                                <i class="bi bi-person"></i> Apellido
+                            </label>
+                            <p class="mb-0"><strong>@Model.LastName</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small mb-1">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <p class="mb-0"><strong>@Model.Email</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="text-muted small mb-1">
+                                <i class="bi bi-calendar"></i> Fecha de Creación
+                            </label>
+                            <p class="mb-0"><strong>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="info-item">
+                            <label class="text-muted small mb-1">
+                                <i class="bi bi-shield"></i> Roles Asignados
+                            </label>
+                            <div class="mt-2">
+                                @if (Model.Roles.Any())
+                                {
+                                    @foreach (var role in Model.Roles)
+                                    {
+                                        <span class="badge bg-primary me-2 mb-2" style="font-size: 0.95rem; padding: 0.5rem 1rem;">
+                                            <i class="bi bi-shield-check"></i> @role
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary" style="font-size: 0.95rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-info-circle"></i> Sin roles asignados
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-gear text-primary"></i> Acciones
+                </h5>
+                <hr>
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar Usuario
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar Usuario
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al Listado
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle text-primary"></i> Información del Sistema
+                </h5>
+                <hr>
+                <p class="small mb-2">
+                    <strong>ID de Usuario:</strong><br>
+                    <code class="small">@Model.Id</code>
+                </p>
+                <p class="small mb-2">
+                    <strong>Estado de la Cuenta:</strong><br>
+                    @if (Model.IsActive)
+                    {
+                        <span class="text-success">✓ La cuenta está activa y puede acceder al sistema</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">✗ La cuenta está inactiva y no puede acceder al sistema</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .info-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+    }
+</style>

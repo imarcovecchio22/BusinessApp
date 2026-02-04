@@ -1,0 +1,125 @@
+@model CreateUserDto
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+<div class="page-header">
+    <h1><i class="bi bi-person-plus"></i> Crear Nuevo Usuario</h1>
+    <p class="text-muted">Completa el formulario para crear un nuevo usuario</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label">
+                                <i class="bi bi-person"></i> Nombre
+                            </label>
+                            <input asp-for="FirstName" class="form-control" placeholder="Juan" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label">
+                                <i class="bi bi-person"></i> Apellido
+                            </label>
+                            <input asp-for="LastName" class="form-control" placeholder="Pérez" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">
+                            <i class="bi bi-envelope"></i> Email
+                        </label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="usuario@ejemplo.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">
+                            <i class="bi bi-lock"></i> Contraseña
+                        </label>
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Mínimo 6 caracteres" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="form-text">
+                            La contraseña debe tener al menos 6 caracteres, incluir mayúsculas, minúsculas y números.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-shield"></i> Roles
+                        </label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" name="Roles" value="Admin" class="form-check-input" id="roleAdmin">
+                                    <label class="form-check-label" for="roleAdmin">
+                                        <strong>Admin</strong> - Acceso completo al sistema
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" name="Roles" value="Usuario" class="form-check-input" id="roleUsuario">
+                                    <label class="form-check-label" for="roleUsuario">
+                                        <strong>Usuario</strong> - Operaciones básicas
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" name="Roles" value="Contador" class="form-check-input" id="roleContador">
+                                    <label class="form-check-label" for="roleContador">
+                                        <strong>Contador</strong> - Gestión financiera
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Crear Usuario
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle text-primary"></i> Información
+                </h5>
+                <hr>
+                <h6>Roles del Sistema</h6>
+                <ul class="small">
+                    <li><strong>Admin:</strong> Puede gestionar usuarios y tiene acceso completo</li>
+                    <li><strong>Usuario:</strong> Acceso a funciones básicas del sistema</li>
+                    <li><strong>Contador:</strong> Gestión de facturación y finanzas</li>
+                </ul>
+                <hr>
+                <h6>Requisitos de Contraseña</h6>
+                <ul class="small">
+                    <li>Mínimo 6 caracteres</li>
+                    <li>Al menos una mayúscula</li>
+                    <li>Al menos una minúscula</li>
+                    <li>Al menos un número</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,21 @@
+@model List<ProductDto>
+@{ ViewData["Title"] = "Productos"; }
+<div class="page-header"><div class="d-flex justify-content-between align-items-center"><div><h1><i class="bi bi-box-seam"></i> Productos</h1></div><div><a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo Producto</a></div></div></div>
+<div class="card mb-3"><div class="card-body"><form asp-action="Index" method="get" class="row g-3">
+<div class="col-md-3"><label class="form-label"><i class="bi bi-search"></i> Buscar</label><input type="text" name="searchTerm" class="form-control" placeholder="Nombre, SKU..." value="@ViewBag.SearchTerm" /></div>
+<div class="col-md-2"><label class="form-label">Tipo</label><select name="type" class="form-select"><option value="">Todos</option><option value="1" selected="@(ViewBag.Type == ProductType.Product)">Productos</option><option value="2" selected="@(ViewBag.Type == ProductType.Service)">Servicios</option></select></div>
+<div class="col-md-3"><label class="form-label">Categoría</label><select name="categoryId" class="form-select" asp-items="ViewBag.Categories"><option value="">Todas</option></select></div>
+<div class="col-md-2"><label class="form-label">Estado</label><select name="isActive" class="form-select"><option value="">Todos</option><option value="true" selected="@(ViewBag.IsActive == true)">Activos</option><option value="false" selected="@(ViewBag.IsActive == false)">Inactivos</option></select></div>
+<div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Buscar</button></div>
+</form></div></div>
+<div class="card"><div class="card-body">
+@if (Model.Any()){<div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Producto</th><th>Tipo</th><th>Precio</th><th>Stock</th><th>Categoría</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead><tbody>
+@foreach (var p in Model){<tr><td><div class="d-flex align-items-center"><i class="bi @(p.Type == ProductType.Product ? "bi-box-seam" : "bi-tools")" style="font-size:2rem;color:#667eea;"></i><div class="ms-2"><strong>@p.Name</strong>@if(!string.IsNullOrEmpty(p.Sku)){<br><small class="text-muted">SKU: @p.Sku</small>}</div></div></td>
+<td><span class="badge @(p.Type == ProductType.Product ? "bg-primary" : "bg-info")">@p.TypeName</span></td>
+<td><strong>$@p.Price.ToString("N2")</strong>@if(p.Cost.HasValue){<br><small class="text-muted">Costo: $@p.Cost.Value.ToString("N2")</small>}</td>
+<td>@if(p.Type == ProductType.Product){if(p.IsOutOfStock){<span class="badge bg-danger">Sin stock</span>}else if(p.IsLowStock){<span class="badge bg-warning text-dark">@p.Stock (Bajo)</span>}else{<span class="badge bg-success">@p.Stock</span>}}else{<span class="text-muted">N/A</span>}</td>
+<td>@if(!string.IsNullOrEmpty(p.CategoryName)){<span class="badge bg-secondary">@p.CategoryName</span>}else{<span class="text-muted">-</span>}</td>
+<td>@if(p.IsActive){<span class="badge bg-success">Activo</span>}else{<span class="badge bg-danger">Inactivo</span>}</td>
+<td class="text-end"><div class="btn-group btn-group-sm"><a asp-action="Details" asp-route-id="@p.Id" class="btn btn-outline-info"><i class="bi bi-eye"></i></a><a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a><a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a></div></td></tr>}
+</tbody></table></div><div class="mt-3 text-muted"><i class="bi bi-info-circle"></i> Total: <strong>@Model.Count</strong> productos</div>}else{<div class="text-center py-5"><i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i><p class="text-muted mt-3">No hay productos</p><a asp-action="Create" class="btn btn-primary mt-2"><i class="bi bi-plus-circle"></i> Crear Primer Producto</a></div>}
+</div></div>

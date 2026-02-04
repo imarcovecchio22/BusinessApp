@@ -1,0 +1,134 @@
+@model UpdateUserDto
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    var userId = ViewBag.UserId as string;
+}
+
+<div class="page-header">
+    <h1><i class="bi bi-pencil"></i> Editar Usuario</h1>
+    <p class="text-muted">Modifica la información del usuario</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@userId" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label">
+                                <i class="bi bi-person"></i> Nombre
+                            </label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label">
+                                <i class="bi bi-person"></i> Apellido
+                            </label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IsActive" class="form-label">
+                            <i class="bi bi-toggle-on"></i> Estado
+                        </label>
+                        <div class="form-check form-switch">
+                            <input asp-for="IsActive" class="form-check-input" role="switch" id="isActiveSwitch" />
+                            <label class="form-check-label" for="isActiveSwitch">
+                                <span id="statusLabel">@(Model.IsActive ? "Activo" : "Inactivo")</span>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Los usuarios inactivos no podrán iniciar sesión en el sistema.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-shield"></i> Roles
+                        </label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" name="Roles" value="Admin" 
+                                           class="form-check-input" id="roleAdmin"
+                                           @(Model.Roles.Contains("Admin") ? "checked" : "") />
+                                    <label class="form-check-label" for="roleAdmin">
+                                        <strong>Admin</strong> - Acceso completo al sistema
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" name="Roles" value="Usuario" 
+                                           class="form-check-input" id="roleUsuario"
+                                           @(Model.Roles.Contains("Usuario") ? "checked" : "") />
+                                    <label class="form-check-label" for="roleUsuario">
+                                        <strong>Usuario</strong> - Operaciones básicas
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" name="Roles" value="Contador" 
+                                           class="form-check-input" id="roleContador"
+                                           @(Model.Roles.Contains("Contador") ? "checked" : "") />
+                                    <label class="form-check-label" for="roleContador">
+                                        <strong>Contador</strong> - Gestión financiera
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Guardar Cambios
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle text-primary"></i> Información
+                </h5>
+                <hr>
+                <p class="small mb-2">
+                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                    <strong>Importante:</strong>
+                </p>
+                <ul class="small">
+                    <li>Los cambios se aplicarán inmediatamente</li>
+                    <li>Los usuarios inactivos no podrán acceder al sistema</li>
+                    <li>Asegúrate de mantener al menos un usuario Admin</li>
+                </ul>
+                <hr>
+                <h6>Cambio de Contraseña</h6>
+                <p class="small text-muted">
+                    Para cambiar la contraseña del usuario, contacta al administrador del sistema.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('isActiveSwitch').addEventListener('change', function() {
+            const label = document.getElementById('statusLabel');
+            label.textContent = this.checked ? 'Activo' : 'Inactivo';
+        });
+    </script>
+}

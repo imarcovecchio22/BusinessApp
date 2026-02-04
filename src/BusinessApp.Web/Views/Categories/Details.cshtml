@@ -1,0 +1,11 @@
+@model CategoryDto
+@{ ViewData["Title"] = "Detalles de Categoría"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi bi-tag"></i> Categoría</h1></div><div><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil"></i> Editar</a><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a></div></div></div>
+<div class="row"><div class="col-md-8"><div class="card" style="border-left: 4px solid @(Model.Color ?? "#667eea")"><div class="card-body">
+<div class="mb-4"><h3><i class="bi @(Model.Icon ?? "bi-tag")" style="color: @(Model.Color ?? "#667eea")"></i> @Model.Name</h3><p class="text-muted">@Model.Description</p>@if(Model.IsActive){<span class="badge bg-success">Activa</span>}else{<span class="badge bg-secondary">Inactiva</span>}</div><hr>
+<div class="row g-3"><div class="col-md-6"><div class="info-item"><label class="text-muted small">Nombre</label><p><strong>@Model.Name</strong></p></div></div>
+<div class="col-md-6"><div class="info-item"><label class="text-muted small">Productos</label><p><strong>@Model.ProductCount</strong></p></div></div>
+<div class="col-md-6"><div class="info-item"><label class="text-muted small">Icono</label><p><i class="bi @(Model.Icon ?? "bi-tag")"></i> @Model.Icon</p></div></div>
+<div class="col-md-6"><div class="info-item"><label class="text-muted small">Color</label><p><span style="display:inline-block;width:20px;height:20px;background:@(Model.Color ?? "#667eea");border-radius:4px;"></span> @Model.Color</p></div></div>
+</div></div></div></div></div>
+<style>.info-item{background:#f8f9fa;padding:1rem;border-radius:8px;}</style>

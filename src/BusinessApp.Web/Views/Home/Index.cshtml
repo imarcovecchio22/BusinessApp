@@ -1,0 +1,211 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4 mb-3">
+        <i class="bi bi-building" style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+        Bienvenido a BusinessApp
+    </h1>
+    <p class="lead text-muted">Sistema de Gestión para Pequeños Negocios</p>
+</div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="row g-4 mb-4">
+        <div class="col-md-12 text-center">
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg">
+                <i class="bi bi-speedometer2"></i> Ir al Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 3rem; color: #667eea;"></i>
+                    </div>
+                    <h5 class="card-title">Mi Perfil</h5>
+                    <p class="card-text text-muted">
+                        <strong>@User.Identity.Name</strong>
+                    </p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <span class="badge bg-primary">Administrador</span>
+                    }
+                    @if (User.IsInRole("Usuario"))
+                    {
+                        <span class="badge bg-info">Usuario</span>
+                    }
+                    @if (User.IsInRole("Contador"))
+                    {
+                        <span class="badge bg-success">Contador</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col-md-4">
+                <a asp-controller="Users" asp-action="Index" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm hover-card">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-people" style="font-size: 3rem; color: #764ba2;"></i>
+                            </div>
+                            <h5 class="card-title text-dark">Gestión de Usuarios</h5>
+                            <p class="card-text text-muted">
+                                Administra los usuarios del sistema
+                            </p>
+                            <span class="btn btn-sm btn-outline-primary mt-2">
+                                Ver Usuarios <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-gear" style="font-size: 3rem; color: #f59e0b;"></i>
+                    </div>
+                    <h5 class="card-title">Configuración</h5>
+                    <p class="card-text text-muted">
+                        Próximamente disponible
+                    </p>
+                    <span class="badge bg-warning text-dark">Próximamente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">
+                        <i class="bi bi-grid-3x3-gap text-primary"></i> Módulos del Sistema
+                    </h4>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="module-card p-3 text-center">
+                                <i class="bi bi-people-fill mb-2" style="font-size: 2rem; color: #667eea;"></i>
+                                <h6>Clientes</h6>
+                                <small class="text-muted">Fase 2</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="module-card p-3 text-center">
+                                <i class="bi bi-box-seam mb-2" style="font-size: 2rem; color: #764ba2;"></i>
+                                <h6>Productos</h6>
+                                <small class="text-muted">Fase 2</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="module-card p-3 text-center">
+                                <i class="bi bi-receipt mb-2" style="font-size: 2rem; color: #10b981;"></i>
+                                <h6>Facturación</h6>
+                                <small class="text-muted">Fase 3</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="module-card p-3 text-center">
+                                <i class="bi bi-wallet2 mb-2" style="font-size: 2rem; color: #ef4444;"></i>
+                                <h6>Gastos</h6>
+                                <small class="text-muted">Fase 3</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <h3 class="mb-4">
+                        <i class="bi bi-check-circle text-success"></i> Características
+                    </h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check2 text-primary me-2"></i>
+                            <strong>Gestión de Clientes</strong> - Administra tu cartera de clientes
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check2 text-primary me-2"></i>
+                            <strong>Control de Inventario</strong> - Productos y servicios
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check2 text-primary me-2"></i>
+                            <strong>Facturación</strong> - Genera facturas profesionales
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check2 text-primary me-2"></i>
+                            <strong>Control de Gastos</strong> - Registra y categoriza gastos
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check2 text-primary me-2"></i>
+                            <strong>Reportes</strong> - Visualiza el estado de tu negocio
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <div class="card-body p-5 text-white">
+                    <h3 class="mb-4">¿Listo para empezar?</h3>
+                    <p class="mb-4">
+                        Inicia sesión para acceder a todas las funcionalidades del sistema
+                        y comienza a gestionar tu negocio de manera eficiente.
+                    </p>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </a>
+                    <div class="mt-4 pt-4 border-top border-light">
+                        <small>
+                            <i class="bi bi-info-circle"></i> 
+                            Usuario demo: admin@businessapp.com / Admin123!
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .hover-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    }
+    
+    .module-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .module-card:hover {
+        background: #ffffff;
+        border-color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+</style>

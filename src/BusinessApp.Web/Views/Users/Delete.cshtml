@@ -1,0 +1,96 @@
+@model UserDto
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="page-header">
+    <h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar Usuario</h1>
+    <p class="text-muted">Confirma la eliminación del usuario</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 2rem;"></i>
+            <div>
+                <h5 class="alert-heading">¡Atención!</h5>
+                <p class="mb-0">
+                    Estás a punto de eliminar este usuario de forma permanente. 
+                    Esta acción no se puede deshacer.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-4">¿Estás seguro que deseas eliminar este usuario?</h4>
+
+                <div class="row mb-4">
+                    <div class="col-md-2 text-center">
+                        <i class="bi bi-person-circle" style="font-size: 4rem; color: #dc3545;"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h5>@Model.FullName</h5>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-envelope"></i> @Model.Email
+                        </p>
+                        <div>
+                            @foreach (var role in Model.Roles)
+                            {
+                                <span class="badge bg-secondary me-1">@role</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-light p-3 rounded mb-4">
+                    <h6 class="mb-3">Información del Usuario:</h6>
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <small class="text-muted">Nombre Completo:</small>
+                            <p class="mb-2"><strong>@Model.FullName</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Email:</small>
+                            <p class="mb-2"><strong>@Model.Email</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Estado:</small>
+                            <p class="mb-2">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactivo</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Creado el:</small>
+                            <p class="mb-2"><strong>@Model.CreatedAt.ToString("dd/MM/yyyy")</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Recuerda:</strong> Se eliminarán todos los datos asociados a este usuario.
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash"></i> Sí, Eliminar Usuario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
