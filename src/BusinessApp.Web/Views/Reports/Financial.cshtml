@@ -1,0 +1,66 @@
+@{ ViewData["Title"] = "Reporte Financiero"; }
+<div class="page-header"><h1><i class="bi bi-cash-stack"></i> Reporte Financiero</h1></div>
+<div class="card mb-3"><div class="card-body"><form id="filterForm" class="row g-3">
+<div class="col-md-4"><label>Desde</label><input type="date" id="fromDate" class="form-control" value="@ViewBag.FromDate?.ToString("yyyy-MM-dd")"/></div>
+<div class="col-md-4"><label>Hasta</label><input type="date" id="toDate" class="form-control" value="@ViewBag.ToDate?.ToString("yyyy-MM-dd")"/></div>
+<div class="col-md-4 d-flex align-items-end"><button type="button" onclick="loadData()" class="btn btn-primary w-100"><i class="bi bi-bar-chart"></i> Generar</button></div>
+</form></div></div>
+
+<div class="row g-4" id="reportContent" style="display:none">
+<div class="col-md-3"><div class="card border-success"><div class="card-body"><h6 class="text-muted">Ingresos</h6><h2 id="totalIncome" class="text-success">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card border-danger"><div class="card-body"><h6 class="text-muted">Gastos</h6><h2 id="totalExpenses" class="text-danger">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card border-primary"><div class="card-body"><h6 class="text-muted">Utilidad Neta</h6><h2 id="netProfit" class="text-primary">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card"><div class="card-body"><h6 class="text-muted">Margen</h6><h2 id="profitMargin">0%</h2></div></div></div>
+
+<div class="col-md-8"><div class="card"><div class="card-body"><h5>Comparativa Mensual</h5><canvas id="financialChart"></canvas></div></div></div>
+
+<div class="col-md-4"><div class="card"><div class="card-body"><h5>Gastos por Categoría</h5><canvas id="expensesChart"></canvas></div></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let finChart = null, expChart = null;
+function loadData(){
+const from = document.getElementById('fromDate').value;
+const to = document.getElementById('toDate').value;
+if(!from || !to) { alert('Seleccione fechas'); return; }
+fetch('/Reports/FinancialData', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({fromDate:from,toDate:to})})
+.then(r => r.json()).then(data => {
+document.getElementById('reportContent').style.display = 'block';
+document.getElementById('totalIncome').textContent = '$' + data.totalIncome.toFixed(2);
+document.getElementById('totalExpenses').textContent = '$' + data.totalExpenses.toFixed(2);
+document.getElementById('netProfit').textContent = '$' + data.netProfit.toFixed(2);
+document.getElementById('profitMargin').textContent = data.profitMargin.toFixed(2) + '%';
+
+const ctx1 = document.getElementById('financialChart');
+if(finChart) finChart.destroy();
+finChart = new Chart(ctx1, {
+type:'bar',
+data:{
+labels: data.monthlyData.map(m => m.monthName),
+datasets:[
+{label:'Ingresos', data: data.monthlyData.map(m => m.income), backgroundColor:'rgba(16,185,129,0.5)'},
+{label:'Gastos', data: data.monthlyData.map(m => m.expenses), backgroundColor:'rgba(239,68,68,0.5)'},
+{label:'Utilidad', data: data.monthlyData.map(m => m.profit), backgroundColor:'rgba(59,130,246,0.5)'}
+]
+},
+options:{responsive:true, plugins:{legend:{display:true}}}
+});
+
+const ctx2 = document.getElementById('expensesChart');
+if(expChart) expChart.destroy();
+expChart = new Chart(ctx2, {
+type:'pie',
+data:{
+labels: data.expensesByCategory.map(e => e.categoryName),
+datasets:[{
+data: data.expensesByCategory.map(e => e.totalAmount),
+backgroundColor: data.expensesByCategory.map(e => e.color || '#667eea')
+}]
+},
+options:{responsive:true, plugins:{legend:{position:'bottom'}}}
+});
+}).catch(err => alert('Error: ' + err));
+}
+window.onload = () => loadData();
+</script>

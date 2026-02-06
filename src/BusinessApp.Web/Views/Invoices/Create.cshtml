@@ -1,0 +1,52 @@
+@model CreateInvoiceDto
+@{ ViewData["Title"] = "Nueva Factura"; }
+<div class="page-header"><h1><i class="bi bi-plus-circle"></i> Nueva Factura</h1></div>
+<div class="card"><div class="card-body"><form asp-action="Create" method="post" id="invoiceForm">
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+<div class="row"><div class="col-md-6 mb-3"><label asp-for="CustomerId">Cliente *</label><select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers" required><option value="">Seleccionar...</option></select></div>
+<div class="col-md-3 mb-3"><label asp-for="InvoiceDate">Fecha Factura</label><input asp-for="InvoiceDate" type="date" class="form-control"/></div>
+<div class="col-md-3 mb-3"><label asp-for="DueDate">Vencimiento</label><input asp-for="DueDate" type="date" class="form-control"/></div></div>
+<div class="mb-3"><label asp-for="TaxRate">IVA (%)</label><input asp-for="TaxRate" type="number" class="form-control" step="0.01"/></div>
+<h5 class="mb-3">Items <button type="button" class="btn btn-sm btn-primary" onclick="addItem()"><i class="bi bi-plus"></i> Agregar</button></h5>
+<div id="itemsContainer"></div>
+<hr><div class="row"><div class="col-md-6"><label asp-for="Notes">Notas</label><textarea asp-for="Notes" class="form-control" rows="3"></textarea></div>
+<div class="col-md-6"><div class="alert alert-info"><strong>Subtotal:</strong> <span id="subtotal">$0.00</span><br><strong>IVA:</strong> <span id="tax">$0.00</span><br><h5>Total: <span id="total">$0.00</span></h5></div></div></div>
+<div class="mt-3"><button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Crear Factura</button><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x"></i> Cancelar</a></div>
+</form></div></div>
+<script>
+let itemCount = 0;
+const products = @Html.Raw(Json.Serialize(ViewBag.Products));
+function addItem(){
+const html = `<div class="row mb-2 item-row" id="item${itemCount}"><div class="col-md-4"><select name="Items[${itemCount}].ProductId" class="form-select product-select" onchange="selectProduct(${itemCount})"><option value="">Manual...</option>${products.map(p => `<option value="${p.id}" data-price="${p.price}">${p.name} - $${p.price}</option>`).join('')}</select></div>
+<div class="col-md-3"><input type="text" name="Items[${itemCount}].Description" class="form-control item-desc" placeholder="Descripción" required/></div>
+<div class="col-md-2"><input type="number" name="Items[${itemCount}].Quantity" class="form-control item-qty" placeholder="Cant" value="1" min="1" onchange="calculateTotals()" required/></div>
+<div class="col-md-2"><input type="number" name="Items[${itemCount}].UnitPrice" class="form-control item-price" placeholder="Precio" step="0.01" min="0" onchange="calculateTotals()" required/></div>
+<div class="col-md-1"><button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${itemCount})"><i class="bi bi-trash"></i></button></div></div>`;
+document.getElementById('itemsContainer').insertAdjacentHTML('beforeend', html);
+itemCount++;
+}
+function removeItem(id){document.getElementById('item'+id).remove();calculateTotals();}
+function selectProduct(idx){
+const select = document.querySelector(`#item${idx} .product-select`);
+const option = select.options[select.selectedIndex];
+if(option.value){
+document.querySelector(`#item${idx} .item-desc`).value = option.text.split(' - ')[0];
+document.querySelector(`#item${idx} .item-price`).value = option.dataset.price;
+calculateTotals();
+}}
+function calculateTotals(){
+let subtotal = 0;
+document.querySelectorAll('.item-row').forEach(row => {
+const qty = parseFloat(row.querySelector('.item-qty')?.value || 0);
+const price = parseFloat(row.querySelector('.item-price')?.value || 0);
+subtotal += qty * price;
+});
+const taxRate = parseFloat(document.querySelector('[name="TaxRate"]').value || 0);
+const tax = subtotal * (taxRate / 100);
+const total = subtotal + tax;
+document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+document.getElementById('tax').textContent = '$' + tax.toFixed(2);
+document.getElementById('total').textContent = '$' + total.toFixed(2);
+}
+window.onload = () => { addItem(); };
+</script>

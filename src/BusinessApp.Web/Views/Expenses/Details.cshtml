@@ -1,0 +1,13 @@
+@model ExpenseDto
+@{ ViewData["Title"] = "Detalle Gasto"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi bi-wallet2"></i> Detalle de Gasto</h1></div><div><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2"><i class="bi bi-pencil"></i> Editar</a><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a></div></div></div>
+<div class="row"><div class="col-md-8"><div class="card"><div class="card-body">
+<h3>@Model.Description</h3><p class="text-muted">@Model.ExpenseDate.ToString("dd/MM/yyyy")</p><hr>
+<div class="row g-3"><div class="col-md-6"><div class="info-item"><label class="text-muted small">Monto</label><p class="mb-0"><strong style="font-size:1.5em;color:#667eea">$@Model.Amount.ToString("N2")</strong></p></div></div>
+@if(!string.IsNullOrEmpty(Model.CategoryName)){<div class="col-md-6"><div class="info-item"><label class="text-muted small">Categoría</label><p class="mb-0"><span class="badge bg-secondary">@Model.CategoryName</span></p></div></div>}
+@if(!string.IsNullOrEmpty(Model.Vendor)){<div class="col-md-6"><div class="info-item"><label class="text-muted small">Proveedor</label><p class="mb-0"><strong>@Model.Vendor</strong></p></div></div>}
+@if(!string.IsNullOrEmpty(Model.ReceiptNumber)){<div class="col-md-6"><div class="info-item"><label class="text-muted small">N° Comprobante</label><p class="mb-0"><strong>@Model.ReceiptNumber</strong></p></div></div>}
+<div class="col-md-6"><div class="info-item"><label class="text-muted small">Estado</label><p class="mb-0">@if(Model.IsPaid){<span class="badge bg-success">Pagado</span>}else{<span class="badge bg-warning text-dark">Pendiente</span>}</p></div></div>
+@if(!string.IsNullOrEmpty(Model.Notes)){<div class="col-12"><div class="info-item"><label class="text-muted small">Notas</label><p class="mb-0">@Model.Notes</p></div></div>}
+</div></div></div></div><div class="col-md-4"><div class="card"><div class="card-body"><h5>Acciones</h5><hr><div class="d-grid gap-2"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil"></i> Editar</a><a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar</a></div></div></div></div></div>
+<style>.info-item{background:#f8f9fa;padding:1rem;border-radius:8px;border-left:3px solid #667eea}</style>

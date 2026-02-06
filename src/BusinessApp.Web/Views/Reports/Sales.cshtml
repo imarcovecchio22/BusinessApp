@@ -1,0 +1,69 @@
+@{ ViewData["Title"] = "Reporte de Ventas"; }
+<div class="page-header"><h1><i class="bi bi-cart"></i> Reporte de Ventas</h1></div>
+<div class="card mb-3"><div class="card-body"><form id="filterForm" class="row g-3">
+<div class="col-md-4"><label>Desde</label><input type="date" id="fromDate" class="form-control" value="@ViewBag.FromDate?.ToString("yyyy-MM-dd")"/></div>
+<div class="col-md-4"><label>Hasta</label><input type="date" id="toDate" class="form-control" value="@ViewBag.ToDate?.ToString("yyyy-MM-dd")"/></div>
+<div class="col-md-4 d-flex align-items-end"><button type="button" onclick="loadData()" class="btn btn-primary w-100"><i class="bi bi-bar-chart"></i> Generar Reporte</button></div>
+</form></div></div>
+
+<div class="row g-4" id="reportContent" style="display:none">
+<div class="col-md-3"><div class="card"><div class="card-body"><h6 class="text-muted">Total Facturado</h6><h2 id="totalSales">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card"><div class="card-body"><h6 class="text-muted">Total Cobrado</h6><h2 id="totalPaid" class="text-success">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card"><div class="card-body"><h6 class="text-muted">Pendiente</h6><h2 id="totalPending" class="text-warning">$0</h2></div></div></div>
+<div class="col-md-3"><div class="card"><div class="card-body"><h6 class="text-muted">Facturas</h6><h2 id="totalInvoices">0</h2></div></div></div>
+
+<div class="col-md-12"><div class="card"><div class="card-body"><h5>Ventas Mensuales</h5><canvas id="salesChart"></canvas></div></div></div>
+
+<div class="col-md-6"><div class="card"><div class="card-body"><h5>Top 10 Clientes</h5><div class="table-responsive"><table class="table table-sm" id="topCustomersTable"><thead><tr><th>Cliente</th><th>Total</th><th>Facturas</th></tr></thead><tbody></tbody></table></div></div></div></div>
+
+<div class="col-md-6"><div class="card"><div class="card-body"><h5>Top 10 Productos</h5><div class="table-responsive"><table class="table table-sm" id="topProductsTable"><thead><tr><th>Producto</th><th>Cantidad</th><th>Total</th></tr></thead><tbody></tbody></table></div></div></div></div>
+
+<div class="col-md-12"><div class="card"><div class="card-body text-center"><a href="#" onclick="exportSales()" class="btn btn-success"><i class="bi bi-file-excel"></i> Exportar a Excel</a></div></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let salesChart = null;
+function loadData(){
+const from = document.getElementById('fromDate').value;
+const to = document.getElementById('toDate').value;
+if(!from || !to) { alert('Seleccione fechas'); return; }
+fetch('/Reports/SalesData', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({fromDate:from,toDate:to})})
+.then(r => r.json()).then(data => {
+document.getElementById('reportContent').style.display = 'block';
+document.getElementById('totalSales').textContent = '$' + data.totalSales.toFixed(2);
+document.getElementById('totalPaid').textContent = '$' + data.totalPaid.toFixed(2);
+document.getElementById('totalPending').textContent = '$' + data.totalPending.toFixed(2);
+document.getElementById('totalInvoices').textContent = data.totalInvoices;
+
+const ctx = document.getElementById('salesChart');
+if(salesChart) salesChart.destroy();
+salesChart = new Chart(ctx, {
+type:'line',
+data:{
+labels: data.monthlySales.map(m => m.monthName),
+datasets:[{
+label:'Ventas',
+data: data.monthlySales.map(m => m.totalSales),
+borderColor:'#667eea',
+backgroundColor:'rgba(102,126,234,0.1)',
+tension:0.4
+}]
+},
+options:{responsive:true, plugins:{legend:{display:true}}}
+});
+
+const custTbody = document.querySelector('#topCustomersTable tbody');
+custTbody.innerHTML = data.topCustomers.map(c => `<tr><td>${c.customerName}</td><td>$${c.totalPurchases.toFixed(2)}</td><td>${c.invoiceCount}</td></tr>`).join('');
+
+const prodTbody = document.querySelector('#topProductsTable tbody');
+prodTbody.innerHTML = data.topProducts.map(p => `<tr><td>${p.productName}</td><td>${p.quantitySold}</td><td>$${p.totalRevenue.toFixed(2)}</td></tr>`).join('');
+}).catch(err => alert('Error: ' + err));
+}
+function exportSales(){
+const from = document.getElementById('fromDate').value;
+const to = document.getElementById('toDate').value;
+window.location.href = `/Reports/ExportSales?fromDate=${from}&toDate=${to}`;
+}
+window.onload = () => loadData();
+</script>

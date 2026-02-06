@@ -1,0 +1,31 @@
+@model InvoiceDto
+@{ ViewData["Title"] = $"Factura {Model.InvoiceNumber}";
+var statusColor = Model.Status == InvoiceStatus.Paid ? "success" : Model.Status == InvoiceStatus.Issued ? "primary" : Model.Status == InvoiceStatus.Cancelled ? "danger" : "secondary"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi bi-receipt"></i> @Model.InvoiceNumber</h1><p class="text-muted">@Model.CustomerName</p></div><div><a asp-action="Pdf" asp-route-id="@Model.Id" class="btn btn-secondary me-2"><i class="bi bi-file-pdf"></i> PDF</a><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a></div></div></div>
+<div class="row"><div class="col-md-8"><div class="card mb-3"><div class="card-body">
+<div class="row mb-3"><div class="col-md-6"><p><strong>Cliente:</strong> @Model.CustomerName</p><p><strong>Fecha:</strong> @Model.InvoiceDate.ToString("dd/MM/yyyy")</p><p><strong>Vencimiento:</strong> @Model.DueDate.ToString("dd/MM/yyyy")</p></div>
+<div class="col-md-6 text-end"><h3><span class="badge bg-@statusColor">@Model.StatusName</span></h3>@if(Model.IsOverdue){<span class="badge bg-danger">Vencida</span>}</div></div><hr>
+<h5>Items</h5><table class="table table-sm"><thead><tr><th>Descripción</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>
+@foreach(var item in Model.Items){<tr><td>@item.Description</td><td>@item.Quantity</td><td>$@item.UnitPrice.ToString("N2")</td><td>$@item.Total.ToString("N2")</td></tr>}
+</tbody></table><hr><div class="row"><div class="col-md-6"></div><div class="col-md-6"><table class="table table-sm"><tr><td>Subtotal:</td><td class="text-end">$@Model.Subtotal.ToString("N2")</td></tr><tr><td>IVA (@Model.TaxRate%):</td><td class="text-end">$@Model.TaxAmount.ToString("N2")</td></tr><tr class="table-active"><td><strong>Total:</strong></td><td class="text-end"><strong>$@Model.Total.ToString("N2")</strong></td></tr>
+@if(Model.PaidAmount > 0){<tr class="text-success"><td>Pagado:</td><td class="text-end">$@Model.PaidAmount.ToString("N2")</td></tr>}
+@if(Model.RemainingAmount > 0){<tr class="text-danger"><td>Pendiente:</td><td class="text-end">$@Model.RemainingAmount.ToString("N2")</td></tr>}
+</table></div></div>
+</div></div>
+@if(Model.Payments.Any()){<div class="card"><div class="card-body"><h5>Pagos</h5><table class="table table-sm"><thead><tr><th>Fecha</th><th>Monto</th><th>Método</th><th>Ref</th></tr></thead><tbody>
+@foreach(var p in Model.Payments){<tr><td>@p.PaymentDate.ToString("dd/MM/yyyy")</td><td>$@p.Amount.ToString("N2")</td><td>@p.MethodName</td><td>@p.Reference</td></tr>}
+</tbody></table></div></div>}
+</div>
+<div class="col-md-4">
+@if(Model.Status != InvoiceStatus.Cancelled && !Model.IsPaid){<div class="card mb-3"><div class="card-body"><h5><i class="bi bi-cash"></i> Pago</h5><form asp-action="AddPayment" method="post">
+<input type="hidden" name="InvoiceId" value="@Model.Id"/>
+<div class="mb-2"><label>Monto</label><input type="number" name="Amount" class="form-control" step="0.01" max="@Model.RemainingAmount" value="@Model.RemainingAmount" required/></div>
+<div class="mb-2"><label>Método</label><select name="Method" class="form-select"><option value="1">Efectivo</option><option value="2">Transferencia</option><option value="3">T. Crédito</option><option value="4">T. Débito</option><option value="5">Cheque</option></select></div>
+<div class="mb-2"><label>Referencia</label><input type="text" name="Reference" class="form-control"/></div>
+<button type="submit" class="btn btn-success w-100"><i class="bi bi-check"></i> Registrar</button>
+</form></div></div>}
+@if(Model.Status == InvoiceStatus.Draft){<div class="card mb-3"><div class="card-body"><h5>Acciones</h5>
+<form asp-action="UpdateStatus" method="post" class="mb-2"><input type="hidden" name="id" value="@Model.Id"/><input type="hidden" name="status" value="2"/><button type="submit" class="btn btn-primary w-100"><i class="bi bi-send"></i> Emitir</button></form>
+<form asp-action="UpdateStatus" method="post"><input type="hidden" name="id" value="@Model.Id"/><input type="hidden" name="status" value="4"/><button type="submit" class="btn btn-danger w-100" onclick="return confirm('¿Cancelar?')"><i class="bi bi-x"></i> Cancelar</button></form>
+</div></div>}
+</div></div>

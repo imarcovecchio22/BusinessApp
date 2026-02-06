@@ -1,0 +1,10 @@
+@model List<ExpenseCategoryDto>
+@{ ViewData["Title"] = "Categorías de Gastos"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi bi-wallet"></i> Categorías de Gastos</h1></div><div><a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus"></i> Nueva Categoría</a></div></div></div>
+<div class="card"><div class="card-body">
+@if(Model.Any()){<div class="row g-4">@foreach(var cat in Model){<div class="col-md-4"><div class="card h-100" style="border-left:4px solid @(cat.Color ?? "#667eea")"><div class="card-body">
+<div class="d-flex justify-content-between align-items-start"><div><h5><i class="bi @(cat.Icon ?? "bi-wallet")"></i> @cat.Name</h5><p class="small text-muted">@cat.Description</p></div><div>@if(cat.IsActive){<span class="badge bg-success">Activo</span>}else{<span class="badge bg-secondary">Inactivo</span>}</div></div><hr>
+<div class="d-flex justify-content-between align-items-center"><div><small class="text-muted">@cat.ExpenseCount gastos</small><br><strong>$@cat.TotalAmount.ToString("N2")</strong></div>
+<div class="btn-group btn-group-sm"><a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a><a asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a></div></div>
+</div></div></div>}</div>}else{<div class="text-center py-5"><i class="bi bi-inbox" style="font-size:4rem;color:#ccc"></i><p class="text-muted mt-3">No hay categorías</p><a asp-action="Create" class="btn btn-primary mt-2"><i class="bi bi-plus"></i> Crear Primera Categoría</a></div>}
+</div></div>

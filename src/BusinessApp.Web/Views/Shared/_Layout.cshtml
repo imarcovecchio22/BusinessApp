@@ -119,6 +119,16 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Invoices" asp-action="Index">
+                                    <i class="bi bi-receipt"></i> Facturas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Expenses" asp-action="Index">
+                                    <i class="bi bi-wallet2"></i> Gastos
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Customers" asp-action="Index">
                                     <i class="bi bi-people"></i> Clientes
                                 </a>
@@ -128,17 +138,26 @@
                                     <i class="bi bi-box-seam"></i> Productos
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">
-                                    <i class="bi bi-tags"></i> Categorías
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-graph-up"></i> Reportes
                                 </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Reports" asp-action="Sales">Ventas</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Reports" asp-action="Financial">Financiero</a></li>
+                                </ul>
                             </li>
                             @if (User.IsInRole("Admin"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">
-                                        <i class="bi bi-shield-lock"></i> Usuarios
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="configDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear"></i> Config
                                     </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">Categorías</a></li>
+                                        <li><a class="dropdown-item" asp-controller="ExpenseCategories" asp-action="Index">Cat. Gastos</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Usuarios</a></li>
+                                    </ul>
                                 </li>
                             }
                         }

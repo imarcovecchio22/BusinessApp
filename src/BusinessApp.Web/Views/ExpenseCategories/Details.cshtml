@@ -1,0 +1,6 @@
+@model ExpenseCategoryDto
+@{ ViewData["Title"] = "Detalle Categoría"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi @(Model.Icon ?? "bi-wallet")"></i> @Model.Name</h1></div><div><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2"><i class="bi bi-pencil"></i> Editar</a><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a></div></div></div>
+<div class="card" style="border-left:4px solid @(Model.Color ?? "#667eea")"><div class="card-body">
+<p class="text-muted">@Model.Description</p><hr><div class="row g-3"><div class="col-md-6"><strong>Gastos:</strong> @Model.ExpenseCount</div><div class="col-md-6"><strong>Total:</strong> $@Model.TotalAmount.ToString("N2")</div></div>
+</div></div>

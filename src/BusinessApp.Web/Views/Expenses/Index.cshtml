@@ -1,0 +1,18 @@
+@model List<ExpenseDto>
+@{ ViewData["Title"] = "Gastos"; }
+<div class="page-header"><div class="d-flex justify-content-between"><div><h1><i class="bi bi-wallet2"></i> Gastos</h1></div><div><a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus"></i> Nuevo Gasto</a></div></div></div>
+<div class="card mb-3"><div class="card-body"><form asp-action="Index" method="get" class="row g-3">
+<div class="col-md-3"><label>Buscar</label><input type="text" name="searchTerm" class="form-control" placeholder="Descripción..." value="@ViewBag.SearchTerm"/></div>
+<div class="col-md-3"><label>Categoría</label><select name="categoryId" class="form-select" asp-items="ViewBag.Categories"><option value="">Todas</option></select></div>
+<div class="col-md-2"><label>Estado</label><select name="isPaid" class="form-select"><option value="">Todos</option><option value="true">Pagados</option><option value="false">Pendientes</option></select></div>
+<div class="col-md-2"><label>Desde</label><input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate"/></div>
+<div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button></div>
+</form></div></div>
+<div class="card"><div class="card-body">
+@if(Model.Any()){<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Monto</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+@foreach(var exp in Model){<tr><td>@exp.ExpenseDate.ToString("dd/MM/yyyy")</td><td>@exp.Description@if(!string.IsNullOrEmpty(exp.Vendor)){<br><small class="text-muted">@exp.Vendor</small>}</td>
+<td>@if(!string.IsNullOrEmpty(exp.CategoryName)){<span class="badge bg-secondary">@exp.CategoryName</span>}else{<span class="text-muted">-</span>}</td>
+<td><strong>$@exp.Amount.ToString("N2")</strong></td><td>@if(exp.IsPaid){<span class="badge bg-success">Pagado</span>}else{<span class="badge bg-warning text-dark">Pendiente</span>}</td>
+<td><div class="btn-group btn-group-sm"><a asp-action="Details" asp-route-id="@exp.Id" class="btn btn-outline-info"><i class="bi bi-eye"></i></a><a asp-action="Edit" asp-route-id="@exp.Id" class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a></div></td></tr>}
+</tbody></table></div>}else{<div class="text-center py-5"><i class="bi bi-inbox" style="font-size:4rem;color:#ccc"></i><p class="text-muted mt-3">No hay gastos</p></div>}
+</div></div>

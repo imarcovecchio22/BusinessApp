@@ -1,0 +1,7 @@
+@model ExpenseCategoryDto
+@{ ViewData["Title"] = "Eliminar Categoría"; }
+<div class="page-header"><h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar Categoría</h1></div>
+<div class="row justify-content-center"><div class="col-md-8"><div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer.</div>
+<div class="card"><div class="card-body"><h4>¿Eliminar "@Model.Name"?</h4><p class="text-muted">Tiene @Model.ExpenseCount gasto(s) asociado(s).</p>
+<form asp-action="Delete" method="post"><div class="d-flex gap-2"><a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x"></i> Cancelar</a><button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar</button></div></form>
+</div></div></div></div>
